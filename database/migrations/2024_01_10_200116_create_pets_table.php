@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->float('weight');
             $table->smallInteger('height');
             $table->integer('house_id');
-            $table->integer('owner_id');
+            $table->integer('user_id');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,7 +31,7 @@ return new class extends Migration {
         Schema::table('pets', function (Blueprint $table) {
             $table->foreign('breed_id')->references('id')->on('breeds');
             $table->foreign('house_id')->references('id')->on('houses');
-            $table->foreign('owner_id')->references('id')->on('owners');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
