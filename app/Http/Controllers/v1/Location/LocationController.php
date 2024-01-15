@@ -9,8 +9,14 @@ use Illuminate\Http\JsonResponse;
 
 class LocationController extends Controller
 {
+    /**
+     * @var LocationRepositoryInterface
+     */
     private LocationRepositoryInterface $locationRepository;
 
+    /**
+     * @var ResponseService
+     */
     protected ResponseService $return;
 
     /**

@@ -11,5 +11,8 @@ interface LocationRepositoryInterface
      */
     public function cities(): Collection;
 
+    /**
+     * @return Collection
+     */
     public function districts(): Collection;
 }
