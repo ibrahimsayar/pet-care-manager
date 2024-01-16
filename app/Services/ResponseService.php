@@ -5,6 +5,8 @@ namespace App\Services;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Laravel\Prompts\select;
+
 class ResponseService
 {
     /**
@@ -20,12 +22,17 @@ class ResponseService
     /**
      * @var int
      */
-    private int $status = Response::HTTP_OK;
+    private int $statusCode = Response::HTTP_OK;
+
+    /**
+     * @var bool
+     */
+    private bool $status = true;
 
     /**
      * @var array|object
      */
-    private array|object $data;
+    private array|object $data = [];
 
     /**
      * @param  array  $header
@@ -41,17 +48,27 @@ class ResponseService
      * @param  string  $messageKey
      * @return $this
      */
-    public function message(string $messageKey = ''): static
+    public function message(string $messageKey = 'SUCCESS'): static
     {
         $this->message = __("messages.$messageKey");
         return $this;
     }
 
     /**
-     * @param  int  $status
+     * @param  int  $statusCode
      * @return $this
      */
-    public function status(int $status = Response::HTTP_OK): static
+    public function statusCode(int $statusCode = Response::HTTP_OK): static
+    {
+        $this->statusCode = $statusCode;
+        return $this;
+    }
+
+    /**
+     * @param  bool  $status
+     * @return $this
+     */
+    public function status(bool $status = true): static
     {
         $this->status = $status;
         return $this;
@@ -72,18 +89,20 @@ class ResponseService
      */
     public function response(): JsonResponse
     {
-        $responseData = [];
-
-        if ($this->message) {
-            $responseData['message'] = $this->message;
-        }
+        $responseData = [
+            'status' => $this->status,
+            'message' => $this->message ?: __('messages.SUCCESS'),
+        ];
 
         $responseData = [
             ...$responseData,
             ...$this->data
         ];
 
-        $response = response()->json($responseData, $this->status);
+        $response = response()->json(
+            $responseData,
+            $this->statusCode
+        );
 
         foreach ($this->header as $key => $item) {
             $response->header($key, $item);

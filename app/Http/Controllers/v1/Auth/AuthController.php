@@ -64,16 +64,14 @@ class AuthController extends Controller
                 ->get($id);
 
             return $this->return
-                ->message('SUCCESS')
                 ->data($user)
-                ->status(Response::HTTP_CREATED)
                 ->response();
         }
 
         return $this->return
             ->message('FAILED')
-            ->data([])
-            ->status(Response::HTTP_BAD_REQUEST)
+            ->statusCode(Response::HTTP_BAD_REQUEST)
+            ->status(false)
             ->response();
     }
 }
