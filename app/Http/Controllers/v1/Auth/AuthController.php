@@ -4,10 +4,12 @@ namespace App\Http\Controllers\v1\Auth;
 
 use App\Helpers\Location;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\Auth\AuthenticationRequest;
 use App\Http\Requests\v1\Auth\RegisterRequest;
 use App\Interfaces\v1\Auth\AuthRepositoryInterface;
 use App\Services\ResponseService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use MaxMind\Db\Reader\InvalidDatabaseException;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,6 +74,55 @@ class AuthController extends Controller
             ->message('FAILED')
             ->statusCode(Response::HTTP_BAD_REQUEST)
             ->status(false)
+            ->response();
+    }
+
+    /**
+     * @param  AuthenticationRequest  $request
+     * @return JsonResponse
+     */
+    public function authentication(AuthenticationRequest $request): JsonResponse
+    {
+        $credentials = $request->validated();
+        $token = auth()->attempt($credentials);
+
+        if (!$token) {
+            return $this->return
+                ->message('INVALID_CREDENTIALS')
+                ->status(Response::HTTP_BAD_REQUEST)
+                ->status(false)
+                ->response();
+        };
+
+        $user = $this->authRepository->get(Auth::id());
+
+        return $this->return
+            ->data([
+                ...$user->toArray(),
+                'token' => $token,
+            ])
+            ->response();
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function refresh(): JsonResponse
+    {
+        return $this->return
+            ->data([
+                'token' => auth()->refresh(),
+            ])
+            ->response();
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function logout(): JsonResponse
+    {
+        auth()->logout();
+        return $this->return
             ->response();
     }
 }

@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
+    Route::post('', 'authentication');
+
+    Route::middleware('authentication')->group(function () {
+        Route::get('refresh', 'refresh');
+        Route::delete('logout', 'logout');
+    });
 });
 
 Route::prefix('location')->controller(LocationController::class)->group(function () {
