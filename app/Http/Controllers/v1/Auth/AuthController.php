@@ -89,7 +89,7 @@ class AuthController extends Controller
         if (!$token) {
             return $this->return
                 ->message('INVALID_CREDENTIALS')
-                ->status(Response::HTTP_BAD_REQUEST)
+                ->statusCode(Response::HTTP_BAD_REQUEST)
                 ->status(false)
                 ->response();
         };

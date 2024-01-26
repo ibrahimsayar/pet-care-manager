@@ -14,6 +14,11 @@ class User extends Authenticatable implements JWTSubject
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
+     * @var array|string[]
+     */
+    protected array $guard = ['api'];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>

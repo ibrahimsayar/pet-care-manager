@@ -60,4 +60,26 @@ class AuthController extends Controller
             ])
             ->response();
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function refresh(): JsonResponse
+    {
+        return $this->responseService
+            ->data([
+                'token' => auth()->guard('admin')->refresh(),
+            ])
+            ->response();
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function logout(): JsonResponse
+    {
+        auth()->guard('admin')->logout();
+        return $this->responseService
+            ->response();
+    }
 }

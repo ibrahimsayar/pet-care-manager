@@ -16,4 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::post('login', 'authentication');
+
+    Route::middleware('admin_authentication')->group(function() {
+        Route::get('refresh', 'refresh');
+        Route::delete('logout', 'logout');
+    });
 });

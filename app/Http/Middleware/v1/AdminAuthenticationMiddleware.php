@@ -8,12 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWT;
 
-class AuthenticationMiddleware
+class AdminAuthenticationMiddleware
 {
     /**
      * Handle an incoming request.
@@ -25,9 +25,9 @@ class AuthenticationMiddleware
         $return = new ResponseService();
 
         try {
-            Auth::shouldUse('api');
-            $user = JWTAuth::parseToken()->toUser();
-            if (!$user) {
+            Auth::shouldUse('admin');
+            $admin = JWTAuth::parseToken()->toUser();
+            if (!$admin) {
                 return $return->status(false)
                     ->statusCode(Response::HTTP_UNAUTHORIZED)
                     ->message('INVALID_AUTHORIZATION_TOKEN')
